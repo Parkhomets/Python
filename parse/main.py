@@ -52,11 +52,38 @@ def get_author(x):
 	ans = get("http://hpc.name/" + x).text
 	ans = ans[ans.find("blank")+7::]
 	ans = ans[:ans.find("</"):]
-	print(ans)
+	return ans
 
-for i in box:
-	get_author(i[3])
+def get_data(x):
+	ans = get("http://hpc.name/" + x).text
+	#print(x.split("#"))
+	ans = ans[ans.rfind(x.split("#")[1])::]
+	result = re.findall(r'\d{2}.\d{2}.\d{4}', ans)
+	return result[0]
 
-#
-#author_url = "misc.php?do=whoposted&t=58859"
-#ans = get(author_url)
+
+
+def go():
+	result = []
+	for i in box:
+		temp = []
+		temp.append(get_description(i[0]))
+		temp.append("http://hpc.name/" + i[0])
+		temp.append(get_data(i[2]))
+		temp.append(last_poster(i[1]))
+		temp.append(get_author(i[3]))
+		result.append(temp)
+		print(temp)
+	return result
+
+	
+
+
+
+
+
+
+
+
+
+
