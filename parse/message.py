@@ -1,9 +1,9 @@
-from main import *
-'''
+#from main import *
+
 from lxml import etree
 from requests import get
 import re, csv, time
-'''
+
 
 url = "http://hpc.name/search.php?do=getdaily"
 ans = get(url)
@@ -33,7 +33,7 @@ for i in root.iter("a"):
 #
 #
 
-'''
+
 def get_description(x): #на входе url
 	ans = get("http://hpc.name/" + x).text
 	ans = ans[ans.find("description")::]
@@ -53,7 +53,7 @@ def get_data(x):
 	ans = ans[ans.rfind(x.split("#")[1])::]
 	result = re.findall(r'\d{2}.\d{2}.\d{4}', ans)
 	return result[0]
-'''
+
 def get_text(x):                        #сообщение достаем по споследнему посту
 	ans = get("http://hpc.name/" + x).text
 	ans = ans[ans.rfind(x.split("#")[1])::]
@@ -66,10 +66,10 @@ def get_text(x):                        #сообщение достаем по 
 	ans = ans.replace("</a>", "")
 	ans = ans.replace("<a href=", "")
 	return ans
-'''
+
 for i in box:
 	print(i)
-'''
+
 #print(get_text("showthread.php?t=59974&p=505779#post505779"))
 def go():
 	result = []
