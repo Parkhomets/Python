@@ -1,0 +1,9 @@
+{
+    "127.0.0.1" :
+    {
+      "user" : "username",
+      "pass" : "*****",
+      "path" : ["~/ftp", "~/ftp/temp", "~/ftp"],
+      "files": ["file.txt", "file2.txt", "file3.txt"]
+    }
+}

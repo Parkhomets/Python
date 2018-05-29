@@ -1,5 +1,7 @@
+from multiprocessing import Process, Lock
 from ftplib import FTP
 import json
+
 
 class Copier:
     def login(self, server, login, passwd):
@@ -25,28 +27,43 @@ class Copier:
         self.json_exist = True
         self.read_json()
 
-    def load_file(self):
-        #примерно тут будет начинаться параллельная область
-        if self.json_exist:
+    def sub_load(self, server, file, path, lock):
+        lock.acquire()
+        try:
+            server.cwd(path)
             try:
-                simple_part = self.data.popitem()
-            except KeyError:
-                return
-            server = simple_part[0]
-            data = simple_part[1]
-            server = self.login(server, data.get("user"), data.get("pass"))
+                with open(file, "rb") as f:
+                    server.storbinary("STOR %s" % file, f)
+            except:
+                print("{} have not been upload".format(file))
+        finally:
+            lock.release()
+
+
+    def load_file(self):
+        if self.json_exist:
+            data = self.data.popitem()
+            server = self.login(data[0], data[1].get("user"), data[1].get("pass"))
             if server:
-                path = data.get("path")
-                files = data.get("files")
+                procs = []
+                files = data[1].get("files")
+                path = data[1].get("path")
+                lock = Lock()
                 for i in range(len(files)):
-                    ftype = files[i].split(".")[len(files[i].split(".")) - 1]
-                    server.cwd(path[i])
-                    try:
-                        with open(files[i], "rb") as f:
-                            server.storbinary("STOR %s" % files[i], f)
-                    except:
-                        print("{} have not been download".format(files[i]))
+                    proc = Process(target=self.sub_load, args=(server, files[i], path[i], lock))
+                    procs.append(proc)
+                    proc.start()
+                for proc in procs:
+                    proc.join()
+            else:
+                print("you are not logged in")
         else:
-            print("You can not download. Json does not exist.")
+            print("You can not upload. Json does not exist.")
+
+
+x = Copier("data.json")
+x.load_file()
+
+
 
 
