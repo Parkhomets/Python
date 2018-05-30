@@ -9,7 +9,7 @@ class Copier:
         try:
             ftp.login(login, passwd)
         except:
-            print("Login in {} with login = {} and pass = {} not successful".format(server, login, passwd))
+            print("Login in {} with login = {} and pass = {} is not successful".format(server, login, passwd))
             return None
         return ftp
 
@@ -19,7 +19,7 @@ class Copier:
                 self.data = json.load(external)
         except FileNotFoundError:
             self.json_exist = False
-            print("json does not exists")
+            print("json does not exist")
 
     def __init__(self, input_json):
         self.input_json = input_json
@@ -35,10 +35,9 @@ class Copier:
                 with open(file, "rb") as f:
                     server.storbinary("STOR %s" % file, f)
             except:
-                print("{} have not been upload".format(file))
+                print("{} not uploaded".format(file))
         finally:
             lock.release()
-
 
     def load_file(self):
         if self.json_exist:
@@ -56,7 +55,7 @@ class Copier:
                 for proc in procs:
                     proc.join()
             else:
-                print("you are not logged in")
+                print("You are not logged in")
         else:
             print("You can not upload. Json does not exist.")
 
