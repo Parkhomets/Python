@@ -58,11 +58,3 @@ class Copier:
                 print("You are not logged in")
         else:
             print("You can not upload. Json does not exist.")
-
-
-x = Copier("data.json")
-x.load_file()
-
-
-
-
