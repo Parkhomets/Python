@@ -9,7 +9,7 @@ class Copier:
         try:
             ftp.login(login, passwd)
         except:
-            print("Login in {} with login = {} and pass = {} is not successful".format(server, login, passwd))
+            print("Login in {} with login = {} and pass = {} not successful".format(server, login, passwd))
             return None
         return ftp
 
@@ -19,7 +19,7 @@ class Copier:
                 self.data = json.load(external)
         except FileNotFoundError:
             self.json_exist = False
-            print("json does not exist")
+            print("json does not exists")
 
     def __init__(self, input_json):
         self.input_json = input_json
@@ -35,7 +35,7 @@ class Copier:
                 with open(file, "rb") as f:
                     server.storbinary("STOR %s" % file, f)
             except:
-                print("{} not uploaded".format(file))
+                print("{} have not been upload".format(file))
         finally:
             lock.release()
 
@@ -47,14 +47,17 @@ class Copier:
                 procs = []
                 files = data[1].get("files")
                 path = data[1].get("path")
-                lock = Lock()
-                for i in range(len(files)):
-                    proc = Process(target=self.sub_load, args=(server, files[i], path[i], lock))
-                    procs.append(proc)
-                    proc.start()
-                for proc in procs:
-                    proc.join()
+                if len(files) == len(path):
+                    lock = Lock()
+                    for i in range(len(files)):
+                        proc = Process(target=self.sub_load, args=(server, files[i], path[i], lock))
+                        procs.append(proc)
+                        proc.start()
+                    for proc in procs:
+                        proc.join()
+                else:
+                    print("Json is not correct")
             else:
-                print("You are not logged in")
+                print("you are not logged in")
         else:
             print("You can not upload. Json does not exist.")
